@@ -5,6 +5,7 @@ import com.directmedia.onlinestore.core.entity.Catalogue;
 import com.directmedia.onlinestore.core.entity.Work;
 
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,27 +20,33 @@ public class AddWorkServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
 
+        try {
+            // recuperation des donnée du formulaire
+            String title = req.getParameter("title");
+            int releaseDate = Integer.parseInt(req.getParameter("release"));
+            String genre = req.getParameter("genre");
+            String mainArtistName = req.getParameter("mainArtist");
+            String summary = req.getParameter("summary");
 
-        Work work=new Work();
-        work.setTitle(req.getParameter("title"));
-        work.setRelease(Integer.parseInt(req.getParameter("release")));
-        work.setGenre(req.getParameter("genre"));
-        work.setMainArtist(new Artist(req.getParameter("mainArtist")));
-        work.setSummary(req.getParameter("summary"));
-        Catalogue.listOfWorks.add(work);
+            // vérification doublons
+            for (Work work : Catalogue.listOfWorks) {
+                if (work.getTitle() == title && work.getRelease() == releaseDate && work.getGenre() == genre && work.getMainArtist().getName() == mainArtistName && work.getSummary() == summary) {
+                    throw new IOException();
+                }
+            }
+            Work work = new Work();
+            work.setTitle(title);
+            work.setRelease(releaseDate);
+            work.setGenre(genre);
+            work.setMainArtist(new Artist(mainArtistName));
+            work.setSummary(summary);
+            Catalogue.listOfWorks.add(work);
 
-
-        resp.setContentType("text/html;charset=UTF-8");
-        out.print("<html>");
-        out.print(" <head>");
-        out.print("<title>Nouvelle oeuvre ajoutée</title>");
-        out.print("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-        out.print("</head>");
-        out.print("<body>");
-        out.print("<div>nouvelle oeuvre ajoutée avec succes avec l'id: "+Work.getLastId()+"</div><br/>");
-        out.print("<a href=\"home\">retour a la page d'accueil</a>");
-        out.print("</body>");
-        out.print("</html>");
+            RequestDispatcher disp = req.getRequestDispatcher("addSuccess");
+            disp.forward(req, resp);
+            }catch(IOException |  NumberFormatException e){
+                    RequestDispatcher disp=req.getRequestDispatcher("addFailure");
+                    disp.forward(req,resp);}
     }
 }
 
