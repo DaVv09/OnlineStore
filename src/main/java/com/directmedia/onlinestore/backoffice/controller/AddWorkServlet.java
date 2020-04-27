@@ -4,7 +4,6 @@ import com.directmedia.onlinestore.core.entity.Artist;
 import com.directmedia.onlinestore.core.entity.Catalogue;
 import com.directmedia.onlinestore.core.entity.Work;
 
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,7 +29,7 @@ public class AddWorkServlet extends HttpServlet {
 
             // vérification doublons
             for (Work work : Catalogue.listOfWorks) {
-                if (work.getTitle() == title && work.getRelease() == releaseDate && work.getGenre() == genre && work.getMainArtist().getName() == mainArtistName && work.getSummary() == summary) {
+                if (work.getTitle().equals(title) && work.getRelease() == releaseDate && work.getGenre().equals(genre) && work.getMainArtist().getName().equals(mainArtistName) && work.getSummary().equals(summary)) {
                     throw new IOException();
                 }
             }
@@ -41,12 +40,15 @@ public class AddWorkServlet extends HttpServlet {
             work.setMainArtist(new Artist(mainArtistName));
             work.setSummary(summary);
             Catalogue.listOfWorks.add(work);
-
-            RequestDispatcher disp = req.getRequestDispatcher("addSuccess");
+            req.setAttribute("nouvelleOeuvre", work);
+            RequestDispatcher disp=null;
+            disp = req.getRequestDispatcher("/SucessAddWork");
+            //disp = req.getRequestDispatcher("/test");
             disp.forward(req, resp);
-            }catch(IOException |  NumberFormatException e){
-                    RequestDispatcher disp=req.getRequestDispatcher("addFailure");
-                    disp.forward(req,resp);}
+        } catch (IOException | NumberFormatException e) {
+            RequestDispatcher disp = req.getRequestDispatcher("/failureAddWork");
+            disp.forward(req, resp);
+        }
     }
 }
 

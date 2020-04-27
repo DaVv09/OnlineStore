@@ -35,7 +35,7 @@ public class AuthenticationServlet extends HttpServlet {
             session.setAttribute("admin",user);
 
 
-            out.print("<a href=\"home\">acceder au panel admin</a>");
+            out.print("<a href=\"home.jsp\">acceder au panel admin</a>");
 
         } else {
 
