@@ -21,7 +21,7 @@
     Bonjour ${sessionScope.admin} <a href="logout">(se deconnecter)</a><br/>
     <%}%>
     <a href="add-work-form.html">Ajouter une oeuvre au catalogue</a><br/>
-    <a href="catalogue.jsp">voir le catalogue</a>
+    <a href="catalogue">voir le catalogue</a>
 </div>
 
 </body>

@@ -4,16 +4,22 @@ import com.directmedia.onlinestore.core.entity.Artist;
 import com.directmedia.onlinestore.core.entity.Catalogue;
 import com.directmedia.onlinestore.core.entity.Work;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet(name = "CatalogueServlet", urlPatterns = {"/catalogue"})
 public class CatalogueServlet extends HttpServlet {
+    private Object Work;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
@@ -45,19 +51,10 @@ public class CatalogueServlet extends HttpServlet {
         catalogue.listOfWorks.add(theTurning);
 
 
-        for (Work work:catalogue.listOfWorks) {
-            out.print("<!DOCTYPE html>");
-            out.print("<html>");
-            out.print(" <head>");
-            out.print("<title>Catalogue</title>");
-            out.print("<meta charset=\"UTF-8\">");
-            out.print("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
-            out.print("</head>");
-            out.print("<body>");
-            out.print("<div><a href=\"http://localhost:8080/frontoffice/work-details?id="+work.getId()+"\">"+work.getTitle() +" (" + work.getRelease() +")</a></div>");
-            out.print("</body>");
-            out.print("</html>");
-        }
+        req.setAttribute("listeOeuvre", Catalogue.listOfWorks);
+        RequestDispatcher disp=req.getRequestDispatcher("/WEB-INF/catalogue.jsp");
+        disp.forward(req,resp);
+
 
 
     }
